@@ -35,6 +35,53 @@ export default function HomePage() {
 
   const isScanPaused = capturedImage !== null;
 
+  async function initCamera() {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: 'environment', width: { ideal: 1280 }, height: { ideal: 720 } },
+        audio: false,
+      });
+      streamRef.current = stream;
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+        await videoRef.current.play();
+        setIsCameraReady(true);
+        setIsCameraError(false);
+      }
+    } catch {
+      setIsCameraError(true);
+    }
+  }
+
+  const onAnalyzeTap = useCallback(async () => {
+    if (status === 'processing' || isScanPaused) return;
+    HapticService.tap();
+
+    const video = videoRef.current;
+    const canvas = canvasRef.current;
+    if (!video || !canvas || !isCameraReady) {
+      if (settings.voiceEnabled) {
+        ttsService.speak('Camera is not ready. Please wait.', settings.language);
+      }
+      return;
+    }
+
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+    ctx.drawImage(video, 0, 0);
+
+    setImageSize({ w: video.videoWidth, h: video.videoHeight });
+    const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+    setCapturedImage(dataUrl);
+
+    canvas.toBlob(async (blob) => {
+      if (!blob) return;
+      await analyzeImage(blob);
+    }, 'image/jpeg', 0.85);
+  }, [status, isScanPaused, isCameraReady, analyzeImage, settings]);
+
   // Initialize camera
   useEffect(() => {
     initCamera();
@@ -82,53 +129,6 @@ export default function HomePage() {
       setShowError(null);
     }
   }, [status]);
-
-  async function initCamera() {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: 'environment', width: { ideal: 1280 }, height: { ideal: 720 } },
-        audio: false,
-      });
-      streamRef.current = stream;
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-        await videoRef.current.play();
-        setIsCameraReady(true);
-        setIsCameraError(false);
-      }
-    } catch {
-      setIsCameraError(true);
-    }
-  }
-
-  const onAnalyzeTap = useCallback(async () => {
-    if (status === 'processing' || isScanPaused) return;
-    HapticService.tap();
-
-    const video = videoRef.current;
-    const canvas = canvasRef.current;
-    if (!video || !canvas || !isCameraReady) {
-      if (settings.voiceEnabled) {
-        ttsService.speak('Camera is not ready. Please wait.', settings.language);
-      }
-      return;
-    }
-
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-    ctx.drawImage(video, 0, 0);
-
-    setImageSize({ w: video.videoWidth, h: video.videoHeight });
-    const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
-    setCapturedImage(dataUrl);
-
-    canvas.toBlob(async (blob) => {
-      if (!blob) return;
-      await analyzeImage(blob);
-    }, 'image/jpeg', 0.85);
-  }, [status, isScanPaused, isCameraReady, analyzeImage, settings]);
 
   function resumeScanning() {
     setCapturedImage(null);
