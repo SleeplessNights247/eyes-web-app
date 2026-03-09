@@ -68,15 +68,22 @@ export default function ResultSheet({ result, onDismiss }: Props) {
         )}
 
         {/* Currency */}
-        {result.currency && (
+        {result.currencyMode && result.currencyTotal != null && (
           <div
             className="mt-3 px-4 py-2.5 rounded-2xl flex items-center gap-2"
             style={{ backgroundColor: `${theme.success}1A` }}
           >
-            <span className="text-lg" style={{ color: theme.success }}>₱</span>
-            <span className="text-base font-medium" style={{ color: theme.success }}>
+            <div className="flex items-center gap-2">
+              <span className="text-lg" style={{ color: theme.success }}>₱</span>
+              <span className="text-base font-medium" style={{ color: theme.success }}>
+                Total: P(result.currencyTotal.toFixed(0))
+              </span>
+            </div>
+            {result.currency && (
+              <span className="text-xs text-right" style={{ color: theme.success }}> 
               {result.currency}
-            </span>
+              </span>
+            )}
           </div>
         )}
 
