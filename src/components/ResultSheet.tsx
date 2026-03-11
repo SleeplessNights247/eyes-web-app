@@ -76,7 +76,7 @@ export default function ResultSheet({ result, onDismiss }: Props) {
             <div className="flex items-center gap-2">
               <span className="text-lg" style={{ color: theme.success }}>₱</span>
               <span className="text-base font-medium" style={{ color: theme.success }}>
-                Total: P(result.currencyTotal.toFixed(0))
+                {'Total: ' + result.currencyTotal.toFixed(0)}
               </span>
             </div>
             {result.currency && (
