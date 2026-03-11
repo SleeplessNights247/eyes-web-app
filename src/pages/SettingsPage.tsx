@@ -85,7 +85,7 @@ export default function SettingsPage() {
   ];
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: colors.background }}>
+    <div className="h-screen overflow-y-auto" style={{ backgroundColor: colors.background }}>
       {/* App bar */}
       <div className="flex items-center px-4 py-3 pt-safe" style={{ backgroundColor: colors.background }}>
         <button onClick={() => navigate(-1)} className="w-14 h-14 flex items-center justify-center">
