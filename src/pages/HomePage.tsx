@@ -130,6 +130,14 @@ export default function HomePage() {
     }
   }, [status]);
 
+  // // When a result comes back, prefer the backend image (enhanced frame)
+  // // so the user sees exactly what the models processed.
+  // useEffect(() => {
+  //   if (currentResult?.imageDataUrl) {
+  //     setCapturedImage(currentResult.imageDataUrl);
+  //   }
+  // }, [currentResult]);
+
   function resumeScanning() {
     setCapturedImage(null);
     setImageSize(null);
@@ -222,7 +230,7 @@ export default function HomePage() {
       <div
         className="absolute bottom-0 left-0 right-0 z-20 pb-9"
         style={{
-          background: `linear-gradient(to bottom, transparent 0%, rgba(13,13,13,0.8) 20%, #0D0D0D 100%)`,
+          background: `linear-gradient(to bottom, transparent 0%, rgba(13,13,13,0.8) 80, #0D0D0D 100%)`,
           height: 220,
         }}
       >
