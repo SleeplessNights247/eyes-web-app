@@ -1,9 +1,9 @@
 {
-  "id": "https://eyes-web.netlify.app/",
+  "id": "https://eyes-web-app.netlify.app/",
   "name": "EYES - AI-Powered Vision Assistance",
   "short_name": "EYES",
   "description": "AI-powered vision assistance using YOLOv8 object detection, depth estimation, and Zero-DCE low-light enhancement.",
-  "start_url": "https://eyes-web.netlify.app/",
+  "start_url": "https://eyes-web-app.netlify.app/",
   "scope": "https://eyes-web.netlify.app/",
   "display": "standalone",
   "background_color": "#0D0D0D",
