@@ -6,16 +6,20 @@
 
 export class ElevenLabsTtsService {
     private currentAudio: HTMLAudioElement | null = null;
+    private currentAbortController: AbortController | null = null;
     private objectUrls: string[] = [];
   
     /** Speak text by calling the backend proxy */
     async speak(text: string, rate: number = 1.0): Promise<void> {
       this.stop();
   
+      this.currentAbortController = new AbortController();
+
       const response = await fetch('/api/tts', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ text, speed: rate }),
+        signal: this.currentAbortController.signal,
       });
   
       if (!response.ok) {
@@ -35,6 +39,7 @@ export class ElevenLabsTtsService {
     }
   
     stop() {
+      this.currentAbortController?.abort();
       if (this.currentAudio) {
         this.currentAudio.pause();
         this.currentAudio.currentTime = 0;
