@@ -10,7 +10,7 @@ type CommandCallback = (command: VoiceCommand) => void;
 const CAPTURE_PHRASES = [
   'take photo', 'take a photo', 'take picture', 'take a picture',
   'capture', 'analyze', 'scan', 'snap',
-  'kunan', 'suriin', 'i-scan', 'kuhanan',
+  'kunan', 'pakita', 'i-scan', 'kuhanan',
 ];
 
 const INTRO_PHRASES = [
