@@ -69,16 +69,32 @@ export default function ResultSheet({ result, onDismiss }: Props) {
         )}
 
         {/* Backend image preview (not overlaid on UI) */}
-        {imageBase64 && (
-          <div className="mt-3">
+        <div
+          className="mt-3 p-3 rounded-2xl"
+          style={{ backgroundColor: 'rgba(255,255,255,0.04)' }}
+        >
+          <p className="text-xs font-semibold mb-2" style={{ color: '#B0BEC5' }}>
+            Analyzed Image
+          </p>
+          {imageBase64 ? (
             <img
               src={`data:image/jpeg;base64,${imageBase64}`}
               alt="Analyzed result"
-              className="w-full max-h-48 object-contain rounded-2xl"
+              className="w-full max-h-72 object-contain rounded-2xl"
               style={{ backgroundColor: '#0D0D0D' }}
             />
-          </div>
-        )}
+          ) : (
+            <div
+              className="w-full min-h-28 rounded-2xl flex items-center justify-center text-center px-3"
+              style={{ backgroundColor: '#0D0D0D', color: theme.warning }}
+            >
+              <p className="text-xs">
+                No backend image returned. Check `RETURN_ANALYZE_IMAGES` and verify
+                `enhanced_image_base64` / `annotated_image_base64` in the API response.
+              </p>
+            </div>
+          )}
+        </div>
 
         {/* Currency */}
         {result.currencyMode && result.currencyTotal != null && (
