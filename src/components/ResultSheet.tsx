@@ -12,6 +12,7 @@ export default function ResultSheet({ result, onDismiss }: Props) {
     : result.distance < 3.0
     ? theme.warning
     : theme.accent;
+  const imageBase64 = result.annotatedImageBase64 || result.enhancedImageBase64;
 
   return (
     <div className="absolute bottom-0 left-0 right-0 z-40">
@@ -64,6 +65,18 @@ export default function ResultSheet({ result, onDismiss }: Props) {
                 {alert}
               </span>
             ))}
+          </div>
+        )}
+
+        {/* Backend image preview (not overlaid on UI) */}
+        {imageBase64 && (
+          <div className="mt-3">
+            <img
+              src={`data:image/jpeg;base64,${imageBase64}`}
+              alt="Analyzed result"
+              className="w-full max-h-48 object-contain rounded-2xl"
+              style={{ backgroundColor: '#0D0D0D' }}
+            />
           </div>
         )}
 
