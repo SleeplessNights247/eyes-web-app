@@ -16,6 +16,10 @@ export interface ResultModel {
   sceneType: string;
   alerts: string[];
   detections: DetectionItem[];
+  enhancedImageBase64: string | null;
+  annotatedImageBase64: string | null;
+  imageWidth: number | null;
+  imageHeight: number | null;
   timestamp: Date;
 }
 
@@ -36,6 +40,10 @@ export function parseResult(json: any): ResultModel {
       bbox: d.bbox ?? [],
       distance: d.distance ?? 0,
     })),
+    enhancedImageBase64: json.enhanced_image_base64 ?? null,
+    annotatedImageBase64: json.annotated_image_base64 ?? null,
+    imageWidth: json.image_width ?? null,
+    imageHeight: json.image_height ?? null,
     timestamp: new Date(),
   };
 }
