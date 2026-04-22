@@ -13,7 +13,6 @@ import AnalyzeButton from '../components/AnalyzeButton';
 import ProcessingOverlay from '../components/ProcessingOverlay';
 import ResultSheet from '../components/ResultSheet';
 import ConnectionBanner from '../components/ConnectionBanner';
-import BoundingBoxOverlay from '../components/BoundingBoxOverlay';
 
 export default function HomePage() {
   const navigate = useNavigate();
@@ -31,7 +30,6 @@ export default function HomePage() {
   const [isCameraReady, setIsCameraReady] = useState(false);
   const [isCameraError, setIsCameraError] = useState(false);
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
-  const [imageSize, setImageSize] = useState<{ w: number; h: number } | null>(null);
   const [showError, setShowError] = useState<string | null>(null);
   const [isVoiceActive, setIsVoiceActive] = useState(false);
   const [isSpeakingIntro, setIsSpeakingIntro] = useState(false);
@@ -78,7 +76,6 @@ export default function HomePage() {
     if (!ctx) return;
     ctx.drawImage(video, 0, 0);
 
-    setImageSize({ w: video.videoWidth, h: video.videoHeight });
     const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
     setCapturedImage(dataUrl);
 
@@ -164,17 +161,8 @@ export default function HomePage() {
     }
   }, [status]);
 
-  // // When a result comes back, prefer the backend image (enhanced frame)
-  // // so the user sees exactly what the models processed.
-  // useEffect(() => {
-  //   if (currentResult?.imageDataUrl) {
-  //     setCapturedImage(currentResult.imageDataUrl);
-  //   }
-  // }, [currentResult]);
-
   function resumeScanning() {
     setCapturedImage(null);
-    setImageSize(null);
     dismissResult();
   }
 
@@ -228,11 +216,6 @@ export default function HomePage() {
         <div className="absolute inset-0 bg-black">
           <img src={capturedImage} alt="Captured" className="w-full h-full object-cover" />
         </div>
-      )}
-
-      {/* Bounding boxes */}
-      {currentResult && imageSize && (
-        <BoundingBoxOverlay result={currentResult} imageWidth={imageSize.w} imageHeight={imageSize.h} />
       )}
 
       {/* Double tap to analyze */}
