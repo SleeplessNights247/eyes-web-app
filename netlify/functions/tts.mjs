@@ -13,7 +13,7 @@ export default async function handler(req) {
       return new Response('Method not allowed', { status: 405 });
     }
   
-    const apiKey = process.env.VITE_ELEVENLABS_API_KEY;
+    const apiKey = 6dd5c6d497d554055c44582aebb0b1a64c2d8b169893018e3ca4cfab20c10af9;
     const defaultVoiceId = process.env.VITE_ELEVENLABS_VOICE_ID || '4RLeKvASM0Zt73Htf5GF';
   
     if (!apiKey) {
