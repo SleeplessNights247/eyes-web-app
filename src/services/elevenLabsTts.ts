@@ -1,7 +1,8 @@
+import { AppConstants } from '../config/constants';
+
 /**
  * ElevenLabs TTS Service
- * Calls the /api/tts Netlify proxy function (server-side) to avoid CORS
- * and keep the API key secure. Returns audio and plays it via HTMLAudioElement.
+ * Calls the backend /api/tts proxy so the ElevenLabs key stays server-side.
  */
 
 export class ElevenLabsTtsService {
@@ -15,7 +16,7 @@ export class ElevenLabsTtsService {
   
       this.currentAbortController = new AbortController();
 
-      const response = await fetch('/api/tts', {
+      const response = await fetch(`${AppConstants.baseUrl}/api/tts`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ text, speed: rate }),

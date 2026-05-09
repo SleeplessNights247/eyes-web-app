@@ -6,7 +6,7 @@ interface SettingsContextType {
   settings: Settings;
   updateSettings: (partial: Partial<Settings>) => void;
   isDark: boolean;
-  colors: typeof themeConfig.dark;
+  colors: typeof themeConfig.dark | typeof themeConfig.light;
 }
 
 const SettingsContext = createContext<SettingsContextType | null>(null);

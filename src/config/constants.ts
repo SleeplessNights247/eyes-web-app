@@ -1,11 +1,14 @@
+const configuredApiBaseUrl = import.meta.env.VITE_API_BASE_URL?.trim();
+const apiBaseUrl = (configuredApiBaseUrl || 'https://eyes-backend-final.up.railway.app').replace(/\/+$/, '');
+
 export const AppConstants = {
   appName: 'EYES',
   appTagline: 'AI-Powered Vision Assistance',
   appVersion: '1.0.0',
 
-  baseUrl: "https://eyes-backend-final.up.railway.app", 
+  baseUrl: apiBaseUrl,
   analyzeEndpoint: '/api/analyze',
-  apiTimeoutMs: 10000,
+  apiTimeoutMs: 60000,
 
   defaultVoiceEnabled: true,
   defaultVibrationEnabled: true,

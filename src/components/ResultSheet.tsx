@@ -49,6 +49,15 @@ export default function ResultSheet({ result, onDismiss }: Props) {
           )}
         </div>
 
+        {result.enhanced && (
+          <div
+            className="mt-3 inline-flex px-2.5 py-1 rounded-full text-xs font-medium"
+            style={{ backgroundColor: `${theme.accent}26`, color: theme.accent }}
+          >
+            Enhanced low-light frame
+          </div>
+        )}
+
         {/* Alerts */}
         {result.alerts.length > 0 && (
           <div className="flex flex-wrap gap-2 mt-3">
@@ -87,11 +96,25 @@ export default function ResultSheet({ result, onDismiss }: Props) {
           </div>
         )}
 
-        {/* Detection count */}
+        {/* Detections */}
         {result.detections.length > 0 && (
-          <p className="mt-3 text-xs" style={{ color: '#666' }}>
-            {result.detections.length} object{result.detections.length !== 1 ? 's' : ''} detected
-          </p>
+          <div className="mt-3 space-y-1.5">
+            {result.detections.slice(0, 4).map((det, i) => (
+              <div key={`${det.label}-${i}`} className="flex items-center justify-between text-xs">
+                <span className="truncate pr-3" style={{ color: '#B0BEC5' }}>
+                  {det.label} · {Math.round(det.confidence * 100)}%
+                </span>
+                <span className="font-medium" style={{ color: det.distance > 0 ? theme.accent : '#666' }}>
+                  {det.distance > 0 ? `${det.distance.toFixed(1)}m` : 'distance unavailable'}
+                </span>
+              </div>
+            ))}
+            {result.detections.length > 4 && (
+              <p className="text-xs" style={{ color: '#666' }}>
+                +{result.detections.length - 4} more detected
+              </p>
+            )}
+          </div>
         )}
 
         {/* Dismiss button */}

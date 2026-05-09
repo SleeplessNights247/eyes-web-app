@@ -16,31 +16,73 @@ export interface ResultModel {
   sceneType: string;
   alerts: string[];
   detections: DetectionItem[];
+  voiceAlert: string | null;
+  imageDataUrl: string | null;
+  imageWidth: number | null;
+  imageHeight: number | null;
+  enhanced: boolean;
+  processingTime: number;
   timestamp: Date;
 }
 
-export function parseResult(json: any): ResultModel {
+function asRecord(value: unknown): Record<string, unknown> {
+  return value !== null && typeof value === 'object' ? value as Record<string, unknown> : {};
+}
+
+function asString(value: unknown, fallback = ''): string {
+  return typeof value === 'string' ? value : fallback;
+}
+
+function asNumber(value: unknown, fallback = 0): number {
+  return typeof value === 'number' && Number.isFinite(value) ? value : fallback;
+}
+
+function asBoolean(value: unknown, fallback = false): boolean {
+  return typeof value === 'boolean' ? value : fallback;
+}
+
+function asNumberArray(value: unknown): number[] {
+  return Array.isArray(value) ? value.filter((item): item is number => typeof item === 'number') : [];
+}
+
+export function parseResult(json: unknown): ResultModel {
+  const data = asRecord(json);
+  const detections = Array.isArray(data.detections) ? data.detections : [];
+  const priorityBbox = asNumberArray(data.priority_bbox);
+
   return {
-    priorityObject: json.priority_object ?? 'Unknown',
-    distance: json.distance ?? 0,
-    isCritical: json.is_critical ?? false,
-    priorityBbox: json.priority_bbox ?? null,
-    currency: json.currency ?? null,
-    currencyTotal: json.currency_total ?? null,
-    currencyMode: json.currency_mode ?? false,
-    sceneType: json.scene_type ?? 'Unknown',
-    alerts: json.alerts ?? [],
-    detections: (json.detections ?? []).map((d: any) => ({
-      label: d.label ?? '',
-      confidence: d.confidence ?? 0,
-      bbox: d.bbox ?? [],
-      distance: d.distance ?? 0,
-    })),
+    priorityObject: asString(data.priority_object, 'Unknown'),
+    distance: asNumber(data.distance),
+    isCritical: asBoolean(data.is_critical),
+    priorityBbox: priorityBbox.length > 0 ? priorityBbox : null,
+    currency: typeof data.currency === 'string' ? data.currency : null,
+    currencyTotal: typeof data.currency_total === 'number' ? data.currency_total : null,
+    currencyMode: asBoolean(data.currency_mode),
+    sceneType: asString(data.scene_type, 'Unknown'),
+    alerts: Array.isArray(data.alerts) ? data.alerts.filter((alert): alert is string => typeof alert === 'string') : [],
+    detections: detections.map((item) => {
+      const det = asRecord(item);
+      return {
+        label: asString(det.label),
+        confidence: asNumber(det.confidence),
+        bbox: asNumberArray(det.bbox),
+        distance: asNumber(det.distance),
+      };
+    }),
+    voiceAlert: typeof data.voice_alert === 'string' ? data.voice_alert : null,
+    imageDataUrl: typeof data.image_data_url === 'string' ? data.image_data_url : null,
+    imageWidth: typeof data.image_width === 'number' ? data.image_width : null,
+    imageHeight: typeof data.image_height === 'number' ? data.image_height : null,
+    enhanced: asBoolean(data.enhanced),
+    processingTime: asNumber(data.processing_time),
     timestamp: new Date(),
   };
 }
 
-export function toSpokenSentence(r: ResultModel, _lang?: string): string {
+export function toSpokenSentence(r: ResultModel, lang?: string): string {
+  void lang;
+  if (r.voiceAlert) return r.voiceAlert;
+
   if (r.currencyMode && r.currency) {
     return `Currency detected. ${r.currency}.`;
   }

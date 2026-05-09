@@ -22,7 +22,7 @@ export default function HistoryPage() {
   }
 
   function speakResult(r: ResultModel) {
-    ttsService.speak(toSpokenSentence(r), settings.language);
+    ttsService.speak(r.voiceAlert || toSpokenSentence(r), settings.language);
   }
 
   return (

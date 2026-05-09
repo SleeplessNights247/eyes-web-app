@@ -85,7 +85,7 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
     }
 
     try {
-      const result = await apiService.analyzeImage(blob);
+      const result = await apiService.analyzeImage(blob, s.language);
       setCurrentResult(result);
       setHistory(prev => {
         const next = [result, ...prev];
@@ -106,15 +106,15 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
       }
 
       if (s.voiceEnabled && (hasDetection || hasCurrency)) {
-        const sentence = toSpokenSentence(result, s.language);
+        const sentence = result.voiceAlert || toSpokenSentence(result, s.language);
         if (result.isCritical) {
           ttsService.speakUrgent(sentence, s.language);
         } else {
           ttsService.speakCalm(sentence, s.language);
         }
       }
-    } catch (e: any) {
-      const msg = e.message || 'Something went wrong';
+    } catch (error: unknown) {
+      const msg = error instanceof Error ? error.message : 'Something went wrong';
       setErrorMessage(msg);
       let spokenError: string;
       if (msg.includes('timed out')) {
