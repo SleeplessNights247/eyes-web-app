@@ -134,14 +134,13 @@ export default function HomePage() {
   }, [status]);
 
   // Prefer the backend-rendered frame so the app shows exactly what the models processed.
-  useEffect(() => {
-    if (currentResult?.imageDataUrl) {
-      setCapturedImage(currentResult.imageDataUrl);
-      if (currentResult.imageWidth && currentResult.imageHeight) {
-        setImageSize({ w: currentResult.imageWidth, h: currentResult.imageHeight });
-      }
-    }
-  }, [currentResult]);
+  // We derive the displayed image each render instead of syncing it into state, which
+  // removes any race between the camera-capture setState and the result-arrival setState.
+  const displayedImage = currentResult?.imageDataUrl ?? capturedImage;
+  const displayedSize =
+    currentResult?.imageWidth && currentResult?.imageHeight
+      ? { w: currentResult.imageWidth, h: currentResult.imageHeight }
+      : imageSize;
 
   function resumeScanning() {
     setCapturedImage(null);
@@ -194,16 +193,29 @@ export default function HomePage() {
         </div>
       )}
 
-      {/* Captured frame overlay */}
-      {capturedImage && (
+      {/* Captured / processed frame overlay.
+          While processing we show the raw captured frame so the user sees something
+          immediately. Once the backend returns, `currentResult.imageDataUrl` replaces
+          it automatically (see `displayedImage` above) so the annotated + enhanced
+          output from Zero-DCE → YOLO → MiDaS is what's on screen. */}
+      {displayedImage && (
         <div className="absolute inset-0 bg-black">
-          <img src={capturedImage} alt="Captured" className="w-full h-full object-cover" />
+          <img
+            key={displayedImage.length}
+            src={displayedImage}
+            alt="Captured"
+            className="w-full h-full object-cover"
+          />
         </div>
       )}
 
-      {/* Bounding boxes */}
-      {currentResult && imageSize && !currentResult.imageDataUrl && (
-        <BoundingBoxOverlay result={currentResult} imageWidth={imageSize.w} imageHeight={imageSize.h} />
+      {/* Bounding boxes (only needed when backend didn't send an annotated image) */}
+      {currentResult && displayedSize && !currentResult.imageDataUrl && (
+        <BoundingBoxOverlay
+          result={currentResult}
+          imageWidth={displayedSize.w}
+          imageHeight={displayedSize.h}
+        />
       )}
 
       {/* Double tap to analyze */}
