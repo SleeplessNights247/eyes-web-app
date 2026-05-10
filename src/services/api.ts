@@ -2,10 +2,11 @@ import { AppConstants } from '../config/constants';
 import { ResultModel, parseResult } from '../models/result';
 
 export class ApiService {
-  async analyzeImage(imageBlob: Blob): Promise<ResultModel> {
+  async analyzeImage(imageBlob: Blob, language: string = 'en'): Promise<ResultModel> {
     const url = `${AppConstants.baseUrl}${AppConstants.analyzeEndpoint}`;
     const formData = new FormData();
     formData.append('image', imageBlob, 'frame.jpg');
+    formData.append('language', language);
 
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), AppConstants.apiTimeoutMs);
@@ -23,15 +24,15 @@ export class ApiService {
       }
       const json = await response.json();
       return parseResult(json);
-    } catch (e: any) {
+    } catch (error: unknown) {
       clearTimeout(timeout);
-      if (e.name === 'AbortError') {
+      if (error instanceof Error && error.name === 'AbortError') {
         throw new Error('Request timed out');
       }
       if (!navigator.onLine) {
         throw new Error('No internet connection');
       }
-      throw new Error(e.message || 'Unexpected error');
+      throw new Error(error instanceof Error ? error.message : 'Unexpected error');
     }
   }
 

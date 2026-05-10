@@ -13,8 +13,8 @@ export default async function handler(req) {
       return new Response('Method not allowed', { status: 405 });
     }
   
-    const apiKey = process.env.VITE_ELEVENLABS_API_KEY;
-    const defaultVoiceId = process.env.VITE_ELEVENLABS_VOICE_ID || '4RLeKvASM0Zt73Htf5GF';
+    const apiKey = process.env.ELEVENLABS_API_KEY || process.env.VITE_ELEVENLABS_API_KEY;
+    const defaultVoiceId = process.env.ELEVENLABS_VOICE_ID || process.env.VITE_ELEVENLABS_VOICE_ID || '4RLeKvASM0Zt73Htf5GF';
   
     if (!apiKey) {
       return new Response('TTS not configured', { status: 503 });

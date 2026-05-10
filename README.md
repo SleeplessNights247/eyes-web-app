@@ -7,7 +7,7 @@ Mobile-friendly progressive web app (PWA) version of the [EYES Flutter app](../e
 - **Real-time object detection** — capture image from camera, send to YOLOv8 backend, display labelled bounding boxes
 - **Distance estimation** — MiDaS depth map integrated into results
 - **Low-light enhancement** — Zero-DCE model applied automatically when lighting is poor
-- **Text-to-speech guidance** — Web Speech API reads out detected objects and distances
+- **Text-to-speech guidance** — ElevenLabs reads backend-generated voice alerts
 - **Haptic feedback** — `navigator.vibrate()` on analyze complete
 - **Auto-scan** — continuous capture loop with configurable interval
 - **Scan history** — last 50 results stored in localStorage
@@ -58,10 +58,11 @@ Key endpoints used:
 
 | Method | Path | Description |
 |---|---|---|
-| `POST` | `/api/analyze` | Multipart image upload → `ResultModel` JSON |
+| `POST` | `/api/analyze` | Multipart image upload → annotated image, detections, distances, scene, priority object, and voice alert |
+| `POST` | `/api/tts` | Backend ElevenLabs proxy → audio/mpeg |
 | `GET` | `/health` | Liveness probe |
 
-Change the backend URL in [`src/config/constants.ts`](src/config/constants.ts).
+Set `VITE_API_BASE_URL` in Netlify to your Railway backend URL, for example `https://your-app.up.railway.app`. The app falls back to the default URL in [`src/config/constants.ts`](src/config/constants.ts) when the variable is not set.
 
 ## Project Structure
 
@@ -77,7 +78,7 @@ eyes-web-app/
 │   ├── hooks/           # useSettings, useAppState (React Context)
 │   ├── models/          # ResultModel, Settings interfaces
 │   ├── pages/           # Splash, Onboarding, Home, History, Settings, About
-│   ├── services/        # api, tts, haptic
+│   ├── services/        # api, ElevenLabs tts, haptic
 │   └── components/      # StatusBar, AnalyzeButton, ResultSheet, BoundingBoxOverlay …
 ├── index.html
 ├── netlify.toml
@@ -86,4 +87,16 @@ eyes-web-app/
 
 ## Environment
 
-No `.env` file is required — the backend URL is hardcoded in `constants.ts`. If you need to override it per-environment, add `VITE_API_BASE_URL` to your Netlify environment variables and read it via `import.meta.env.VITE_API_BASE_URL`.
+Recommended Netlify environment variables:
+
+```bash
+VITE_API_BASE_URL=https://your-railway-backend.up.railway.app
+```
+
+Recommended Railway environment variables:
+
+```bash
+ELEVENLABS_API_KEY=your_elevenlabs_api_key
+ELEVENLABS_VOICE_ID=your_voice_id
+ALLOWED_ORIGINS=https://your-netlify-site.netlify.app,http://localhost:5173,http://localhost:4173
+```

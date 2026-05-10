@@ -34,13 +34,15 @@ export class HapticService {
     return false;
   }
 
-  private static regularPattern(distance: number, _intensity: number): boolean {
+  private static regularPattern(distance: number, intensity: number): boolean {
+    const level = Math.max(1, Math.min(3, Math.round(intensity)));
+
     if (distance < AppConstants.distanceVeryClose) {
-      navigator.vibrate([200, 200, 200]);
+      navigator.vibrate(level === 3 ? [220, 120, 220, 120, 220] : level === 2 ? [200, 160, 200] : [160]);
       return true;
     }
     if (distance < AppConstants.distanceClose) {
-      navigator.vibrate([250]);
+      navigator.vibrate(level === 3 ? [220, 120, 220] : level === 2 ? [180] : [120]);
       return true;
     }
     return false;

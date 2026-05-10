@@ -61,7 +61,7 @@ const strings: Record<string, Record<string, string>> = {
     error_timeout: 'Request timed out. Please try again.',
     error_no_internet: 'No internet connection.',
     error_generic: 'Something went wrong. Please try again.',
-    intro_response: "I am EYES, I help in seeing your surroundings. Point the camera and tap to scan so I can see your surroundings. I'll tell you what's in front of you, how far away, and point out dangers. I can also detect and count money. Just say 'scan' or tap the button to get started."
+    intro_response: "I am EYES. Point the camera and tap to scan. I'll tell you what's in front of you, how far away it is, and point out dangers. I can also detect and count money."
   },
   fil: {
     onboarding_detect_title: 'Nakaka-detect ng paligid mo',
@@ -79,7 +79,7 @@ const strings: Record<string, Record<string, string>> = {
     skip: 'Laktawan',
     get_started: 'Magsimula',
     next: 'Susunod',
-    camera_ready: 'Handa na ang camera. I-tap para tingnan o magsabi ng scan, i-scan, kunan, pakita, kuhanan.',
+    camera_ready: 'Handa na ang camera. I-tap para suriin ang paligid.',
     analyzing: 'Pinagmamasdan ang iyong paligid',
     starting_camera: 'Binubuksan ang camera...',
     camera_unavailable: 'Hindi available ang camera',
@@ -125,7 +125,7 @@ const strings: Record<string, Record<string, string>> = {
     error_timeout: 'Nag-timeout ang request. Pakisubukang muli.',
     error_no_internet: 'Walang koneksyon sa internet.',
     error_generic: 'May nangyaring mali. Pakisubukang muli.',
-    intro_response:"Ako si EYES tumutulong ako sa iyo na pagmasdan ang iyong paligid. Itutok ang camera at i-tap para suriin ko ang paligid. Sasabihin ko sa iyo kung ano ang nasa harap mo, kung gaano kalayo, at magsasabi ako ng mga panganib. Kaya ko ring makapag-detect at mag bilang ng pera. Sabihin lang ang 'suriin' o i-tap ang button para magsimula."
+    intro_response:"Ako si EYES. Itutok ang camera at i-tap para suriin ang paligid. Sasabihin ko kung ano ang nasa harap mo, gaano kalayo, at kung may panganib. Kaya ko ring mag-detect at magbilang ng pera."
   },
 };
 
